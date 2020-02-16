@@ -10,7 +10,8 @@ from core.models import Ingredient
 from recipe.serializers import IngredientSerializer
 
 
-INGREDIENTS_URL = reverse('reverse:ingredients-list')
+INGREDIENTS_URL = reverse('recipe:ingredient-list')
+
 
 class PublicIngredientsApiTests(TestCase):
     """Test the publicly available ingredients API"""
@@ -21,7 +22,7 @@ class PublicIngredientsApiTests(TestCase):
     def test_login_required(self):
         """Test that login is required to access the endpoint"""
         res = self.client.get(INGREDIENTS_URL)
-        
+
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
@@ -35,7 +36,7 @@ class PrivateIngredientsAPITests(TestCase):
             'testpass'
         )
         self.client.force_authenticate(self.user)
-    
+
     def test_retrieve_ingredients_list(self):
         """Test retrieving a list pf inmgredients"""
         Ingredient.objects.create(user=self.user, name='Kale')
@@ -43,8 +44,8 @@ class PrivateIngredientsAPITests(TestCase):
 
         res = self.client.get(INGREDIENTS_URL)
 
-        Ingredients = Ingredient.objects.all().order_by('-name')
-        serializer =IngredientSerializer(ingredients, mamy=True)
+        ingredients = Ingredient.objects.all().order_by('-name')
+        serializer = IngredientSerializer(ingredients, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
