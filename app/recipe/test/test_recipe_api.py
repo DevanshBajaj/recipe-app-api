@@ -27,6 +27,7 @@ def sample_ingredient(user, name='Cinnamon'):
     """Create and return a sample ingredient"""
     return Ingredient.objects.create(user=user, name=name)
 
+
 def sample_recipe(user, **params):
     """Create and return a sample recipe"""
     defaults = {
