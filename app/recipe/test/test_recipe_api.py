@@ -224,7 +224,7 @@ class RecipeImageUploadTests(TestCase):
             img = Image.new('RGB', (10, 10))
             img.save(ntf, format='JPEG')
             ntf.seek(0)
-            res = self.client.port(url, {'image': ntf}, format='multipart')
+            res = self.client.post(url, {'image': ntf}, format='multipart')
 
         self.recipe.refresh_from_db()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -234,6 +234,6 @@ class RecipeImageUploadTests(TestCase):
     def test_upload_image_bad_request(self):
         """Test uploading an invalid image"""
         url = image_upload_url(self.recipe.id)
-        res = self.client.post(url, {'image':'notimage'}, format='multipart')
+        res = self.client.post(url, {'image': 'notimage'}, format='multipart')
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
