@@ -238,7 +238,7 @@ class RecipeImageUploadTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_filter_recipe_by_tags(self):
+    def test_filter_recipes_by_tags(self):
         """Test returning recipes with specific tags"""
         recipe1 = sample_recipe(user=self.user, title='Thai vegetable curry')
         recipe2 = sample_recipe(user=self.user, title='Aubergine with tahini')
@@ -250,7 +250,7 @@ class RecipeImageUploadTests(TestCase):
 
         res = self.client.get(
             RECIPES_URL,
-            {'tags': f'{tag1.id},{tag2.id}'}
+            {'tags': '{},{}'.format(tag1.id, tag2.id)}
         )
 
         serializer1 = RecipeSerializer(recipe1)
@@ -260,10 +260,10 @@ class RecipeImageUploadTests(TestCase):
         self.assertIn(serializer2.data, res.data)
         self.assertNotIn(serializer3.data, res.data)
 
-    def test_filter_recipe_by_ingredients(self):
+    def test_filter_recipes_by_ingredients(self):
         """Test returning recipes with specific ingredients"""
         recipe1 = sample_recipe(user=self.user, title='Posh beans on toast')
-        recipe2 = sample_recipe(user=self.user, title='chicken cacciatore')
+        recipe2 = sample_recipe(user=self.user, title='Chicken cacciatore')
         ingredient1 = sample_ingredient(user=self.user, name='Feta cheese')
         ingredient2 = sample_ingredient(user=self.user, name='Chicken')
         recipe1.ingredients.add(ingredient1)
@@ -272,8 +272,9 @@ class RecipeImageUploadTests(TestCase):
 
         res = self.client.get(
             RECIPES_URL,
-            {'ingredients': f'{ingredient1.id},{ingredient2.id}'}
+            {'ingredients': '{},{}'.format(ingredient1.id, ingredient2.id)}
         )
+
         serializer1 = RecipeSerializer(recipe1)
         serializer2 = RecipeSerializer(recipe2)
         serializer3 = RecipeSerializer(recipe3)
